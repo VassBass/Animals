@@ -2,14 +2,19 @@ package fauna;
 
 import exception.NotEnoughEnergyException;
 
+import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class Animal {
     private int MAX_ENERGY;
-    private int energy;
+    private final int INTELLIGENCE;
 
-    public Animal(int maxEnergy){
+    private int energy;
+    private final HashMap<String, String> commands = new HashMap<>();
+
+    public Animal(int maxEnergy, int intelligence){
         MAX_ENERGY = maxEnergy;
+        this.INTELLIGENCE = intelligence;
     }
 
     public void increaseEnergy(int e){
@@ -50,6 +55,9 @@ public abstract class Animal {
 
     public int getMaxEnergy(){
         return MAX_ENERGY;
+    }
+    public int getIntelligence(){
+        return INTELLIGENCE;
     }
 
     public void died(){

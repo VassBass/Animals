@@ -9,23 +9,23 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Human extends Predator implements Legs {
+public class Human extends Animal implements Predator, Legs {
     private final String name, surname;
 
-    private final ArrayList<Pet>pets = new ArrayList<>();
+    private final ArrayList<Animal>pets = new ArrayList<>();
 
-    private Human(String name, String surname, int maxEnergy) {
-        super(maxEnergy);
+    protected Human(String name, String surname, int maxEnergy, int intelligence) {
+        super(maxEnergy, intelligence);
         this.name = name;
         this.surname = surname;
     }
 
-    public static Human create(String name, String surname, int maxEnergy){
-        if (name == null || surname == null || maxEnergy <= 0
+    public static Human create(String name, String surname, int maxEnergy, int intelligence){
+        if (name == null || surname == null || maxEnergy <= 0 || intelligence <= 0
                 || name.isEmpty() || name.isBlank() || surname.isEmpty() || surname.isBlank()){
             return null;
         }else {
-            return new Human(name, surname, maxEnergy);
+            return new Human(name, surname, maxEnergy, intelligence);
         }
     }
 
@@ -37,20 +37,8 @@ public class Human extends Predator implements Legs {
         return surname;
     }
 
-    public void addPet(Pet pet){
-        pets.add(pet);
-    }
-
-    public Pet getPet(String nickname){
-        if (nickname == null || nickname.isEmpty() || nickname.isBlank()) return null;
-
-        for (Pet pet : pets){
-            if (pet.getNickname().equalsIgnoreCase(nickname)){
-                return pet;
-            }
-        }
-
-        return null;
+    public ArrayList<Animal>getPetsList(){
+        return pets;
     }
 
     @Override
