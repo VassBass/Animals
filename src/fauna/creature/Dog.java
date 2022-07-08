@@ -27,16 +27,24 @@ public class Dog extends Pet implements Legs, Glottis, Fangs {
     @Override
     public void eat() {
         increaseEnergy(getMaxEnergy()/2);
+        System.out.println(this + " eats.");
     }
 
     @Override
     public void sleep() {
         increaseEnergy(getMaxEnergy()/2);
+        System.out.println(this + " sleep.");
     }
 
     @Override
     public boolean bite(Animal animal) {
-        return animal.survive(50);
+        if (animal.survive(50)){
+            System.out.println(this + " tried to bite the " + animal + ", but failed");
+            return false;
+        }else {
+            System.out.println(this + " bites the " + animal);
+            return true;
+        }
     }
 
     @Override
@@ -51,6 +59,7 @@ public class Dog extends Pet implements Legs, Glottis, Fangs {
         }else {
             decreaseEnergy(distance/200);
         }
+        System.out.println(this + " walked " + distance + " meters.");
     }
 
     @Override
@@ -60,6 +69,7 @@ public class Dog extends Pet implements Legs, Glottis, Fangs {
         }else {
             decreaseEnergy(distance/150);
         }
+        System.out.println(this + " ran " + distance + " meters.");
     }
 
     @Override
@@ -76,7 +86,13 @@ public class Dog extends Pet implements Legs, Glottis, Fangs {
             return false;
         }
 
-        return successChance >= 80;
+        if (successChance < 80){
+            System.out.println(this + " tried to jump to a height of" + height + " meter, but fell");
+            return false;
+        }else {
+            System.out.println(this + " jumped to a height of" + " meter");
+            return true;
+        }
     }
 
     @Override

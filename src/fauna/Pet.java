@@ -4,7 +4,12 @@ import java.util.HashMap;
 
 public abstract class Pet extends Animal {
     private final String name;
+
+    /**
+     * Directly Proportional to the number of commands the pet can remember
+     */
     private final int intelligence;
+
     private final HashMap<String, String>commands = new HashMap<>();
 
     protected Pet(int maxEnergy, int intelligence, String name) {

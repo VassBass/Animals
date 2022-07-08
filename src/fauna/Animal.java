@@ -2,12 +2,17 @@ package fauna;
 
 import exception.NotEnoughEnergyException;
 
-import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class Animal {
+    /**
+     * The value of the maximum energy of the animal
+     */
     private int MAX_ENERGY;
 
+    /**
+     * The value of the current energy of the animal
+     */
     private int energy;
 
     protected Animal(int maxEnergy){
@@ -25,6 +30,11 @@ public abstract class Animal {
     }
 
     public void decreaseEnergy(int e) throws NotEnoughEnergyException {
+        if (MAX_ENERGY < 0){
+            System.out.println("This animal is dead.");
+            return;
+        }
+
         if (e > energy){
             throw new NotEnoughEnergyException(this);
         }else {

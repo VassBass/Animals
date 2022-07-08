@@ -2,40 +2,54 @@ package fauna.creature;
 
 import exception.NotEnoughEnergyException;
 import fauna.Animal;
+import fauna.Pet;
+import fauna.organ.Claws;
 import fauna.organ.Fangs;
 import fauna.organ.Glottis;
 import fauna.organ.Legs;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Wolf extends Animal implements Legs, Fangs, Glottis {
-    protected Wolf(int maxEnergy) {
-        super(maxEnergy);
+public class Cat extends Pet implements Legs, Glottis, Fangs, Claws {
+    protected Cat(int maxEnergy, int intelligence, String name) {
+        super(maxEnergy, intelligence, name);
     }
 
-    public static Wolf create(int maxEnergy){
-        if (maxEnergy <= 0){
+    public static Cat create(int maxEnergy, int intelligence, String name){
+        if (maxEnergy <= 0 || intelligence < 0
+                || name == null || name.isEmpty() || name.isBlank()){
             return null;
         }else {
-            return new Wolf(maxEnergy);
+            return new Cat(maxEnergy, intelligence, name);
         }
     }
 
     @Override
     public void eat() {
-        increaseEnergy(getMaxEnergy()/4);
+        increaseEnergy(getMaxEnergy()/2);
         System.out.println(this + " eats.");
     }
 
     @Override
     public void sleep() {
-        increaseEnergy(getMaxEnergy()/4);
+        increaseEnergy(getMaxEnergy()/2);
         System.out.println(this + " sleep.");
     }
 
     @Override
+    public boolean scratch(Animal animal) {
+        if (animal.survive(90)){
+            System.out.println(this + " tried to scratch the " + animal + ", but failed");
+            return false;
+        }else {
+            System.out.println(this + " scratch the " + animal);
+            return true;
+        }
+    }
+
+    @Override
     public boolean bite(Animal animal) {
-        if (animal.survive(60)){
+        if (animal.survive(50)){
             System.out.println(this + " tried to bite the " + animal + ", but failed");
             return false;
         }else {
@@ -46,25 +60,32 @@ public class Wolf extends Animal implements Legs, Fangs, Glottis {
 
     @Override
     public void makeSound() {
-        System.out.println("Woooooooooooooooo!");
+        System.out.println("Meow!");
+    }
+
+    @Override
+    public boolean climb() throws NotEnoughEnergyException {
+        decreaseEnergy(1);
+        System.out.println(this + " climbed a tree and lay down.");
+        return true;
     }
 
     @Override
     public void walk(int distance) throws NotEnoughEnergyException {
-        if (distance < 400){
+        if (distance < 200){
             decreaseEnergy(2);
         }else {
-            decreaseEnergy(distance/200);
+            decreaseEnergy(distance/100);
         }
         System.out.println(this + " walked " + distance + " meters.");
     }
 
     @Override
     public void run(int distance) throws NotEnoughEnergyException {
-        if (distance < 300){
+        if (distance < 100){
             decreaseEnergy(2);
         }else {
-            decreaseEnergy(distance/150);
+            decreaseEnergy(distance/50);
         }
         System.out.println(this + " ran " + distance + " meters.");
     }
@@ -74,12 +95,15 @@ public class Wolf extends Animal implements Legs, Fangs, Glottis {
         int successChance;
         if (height < 1D) {
             decreaseEnergy(1);
-            successChance = ThreadLocalRandom.current().nextInt(60, 101);
+            successChance = 100;
         }else if (height < 2D) {
-            decreaseEnergy(5);
-            successChance = ThreadLocalRandom.current().nextInt(20, 101);
+            decreaseEnergy(2);
+            successChance = ThreadLocalRandom.current().nextInt(60, 101);
+        }else if (height < 3) {
+            decreaseEnergy(3);
+            successChance = ThreadLocalRandom.current().nextInt(20, 91);
         }else {
-            System.out.println(this + " is trying to jump to a height of " + height + " meters, but it's too high for him");
+            System.out.println(this + " thought to jump" + height + " meters high, but remembered that he was too lazy.");
             return false;
         }
 
@@ -90,10 +114,5 @@ public class Wolf extends Animal implements Legs, Fangs, Glottis {
             System.out.println(this + " jumped to a height of" + " meter");
             return true;
         }
-    }
-
-    @Override
-    public String toString() {
-        return "some wolf";
     }
 }

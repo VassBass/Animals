@@ -5,14 +5,14 @@ import fauna.Animal;
 import fauna.Pet;
 import fauna.organ.Fangs;
 import fauna.organ.Glottis;
+import fauna.organ.Hands;
 import fauna.organ.Legs;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Human extends Pet implements Legs, Fangs, Glottis {
+public class Human extends Pet implements Legs, Fangs, Glottis, Hands {
     private final String surname;
 
     private final ArrayList<Pet>pets = new ArrayList<>();
@@ -37,7 +37,7 @@ public class Human extends Pet implements Legs, Fangs, Glottis {
     
     public boolean addPet(Pet pet){
         if (pets.contains(pet)){
-            System.out.println(this + " already has a pet named " + pet.getName());
+            System.out.println(this + " already has a pet named " + pet);
             return false;
         }else {
             return pets.add(pet);
@@ -83,16 +83,53 @@ public class Human extends Pet implements Legs, Fangs, Glottis {
         }
     }
 
+    public void callCommand(String petName, String commandName){
+        if (petName == null || petName.isEmpty() || petName.isBlank()) {
+            System.out.println(getName() + surname + " could not pronounce such a name");
+        }else if (commandName == null || commandName.isEmpty() || commandName.isBlank()){
+            System.out.println(getName() + surname + " could not pronounce such a command");
+        } else {
+            int index = pets.indexOf(Pet.petWithName(petName));
+            if (index >= 0){
+                System.out.println(this + " told to " + petName + " \"" + commandName + "\"");
+                String commandResult = pets.get(index).doCommand(commandName);
+                if (commandResult == null){
+                    System.out.println(petName + " do nothing.");
+                }else {
+                    System.out.println(petName + " " + commandResult);
+                }
+            }else {
+                System.out.println(this + " called " + petName + " but none of his pets responded.");
+            }
+        }
+    }
 
+    public void callCommandToAll(String commandName){
+        if (commandName == null || commandName.isEmpty() || commandName.isBlank()){
+            System.out.println(getName() + surname + " could not pronounce such a command");
+        } else {
+            for (Pet p : pets) {
+                System.out.println(this + " told to " + p + " \"" + commandName + "\"");
+                String commandResult = p.doCommand(commandName);
+                if (commandResult == null) {
+                    System.out.println(p + " do nothing.");
+                } else {
+                    System.out.println(p + " " + commandResult);
+                }
+            }
+        }
+    }
 
     @Override
     public void eat() {
         increaseEnergy(getMaxEnergy()/2);
+        System.out.println(this + " eats.");
     }
 
     @Override
     public void sleep() {
         increaseEnergy(getMaxEnergy()/2);
+        System.out.println(this + " sleep.");
     }
 
     @Override
@@ -102,6 +139,7 @@ public class Human extends Pet implements Legs, Fangs, Glottis {
         }else {
             decreaseEnergy(distance/100);
         }
+        System.out.println(this + " walked " + distance + " meters.");
     }
 
     @Override
@@ -111,6 +149,7 @@ public class Human extends Pet implements Legs, Fangs, Glottis {
         }else {
             decreaseEnergy(distance/50);
         }
+        System.out.println(this + " ran " + distance + " meters.");
     }
 
     @Override
@@ -130,17 +169,41 @@ public class Human extends Pet implements Legs, Fangs, Glottis {
             return false;
         }
 
-        return successChance >= 80;
+        if (successChance < 80){
+            System.out.println(this + " tried to jump to a height of" + height + " meter, but fell");
+            return false;
+        }else {
+            System.out.println(this + " jumped to a height of" + " meter");
+            return true;
+        }
     }
 
     @Override
     public boolean bite(Animal animal) {
-        return animal.survive(20);
+        if (animal.survive(20)){
+            System.out.println(this + " tried to bite the " + animal + ", but failed");
+            return false;
+        }else {
+            System.out.println(this + " bites the " + animal);
+            return true;
+        }
     }
 
     @Override
     public void makeSound() {
         System.out.println("Hello! My name is " + getName() + " " + surname + ".");
+    }
+
+    @Override
+    public boolean climb() throws NotEnoughEnergyException {
+        if (ThreadLocalRandom.current().nextInt(60, 101) > 80){
+            decreaseEnergy(2);
+            System.out.println(this + " climbed a tree and looked around. Then he climb off.");
+            return true;
+        }else {
+            System.out.println(this + " tries to climb a tree, but falls.");
+            return false;
+        }
     }
 
     @Override

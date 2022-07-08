@@ -1,5 +1,12 @@
 package fauna.organ;
 
+import exception.NotEnoughEnergyException;
+
 public interface Hands {
-    boolean climb();
+    /**
+     * ability to climb to a tree
+     * @return result of climb
+     * @throws NotEnoughEnergyException if animal has no energy
+     */
+    boolean climb() throws NotEnoughEnergyException;
 }
