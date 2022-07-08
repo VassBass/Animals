@@ -13,6 +13,13 @@ public abstract class Pet extends Animal {
         this.name = name;
     }
 
+    public static Pet petWithName(String name){
+        return new Pet(0, 0,name) {
+            @Override public void eat() {}
+            @Override public void sleep() {}
+        };
+    }
+
     public boolean learnCommand(String name, String action){
         if (commands.containsKey(name)){
             commands.put(name, action);
@@ -28,6 +35,10 @@ public abstract class Pet extends Animal {
             commands.remove(name);
             return true;
         }else return false;
+    }
+
+    public String doCommand(String commandName){
+        return commands.get(commandName);
     }
 
     public int getIntelligence(){

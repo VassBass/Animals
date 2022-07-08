@@ -8,13 +8,14 @@ import fauna.organ.Glottis;
 import fauna.organ.Legs;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Human extends Pet implements Legs, Fangs, Glottis {
     private final String surname;
 
-    private final ArrayList<Animal>pets = new ArrayList<>();
+    private final ArrayList<Pet>pets = new ArrayList<>();
 
     protected Human(String name, String surname, int maxEnergy, int intelligence) {
         super(maxEnergy, intelligence, name);
@@ -33,10 +34,56 @@ public class Human extends Pet implements Legs, Fangs, Glottis {
     public String getSurname(){
         return surname;
     }
-
-    public ArrayList<Animal>getPetsList(){
-        return pets;
+    
+    public boolean addPet(Pet pet){
+        if (pets.contains(pet)){
+            System.out.println(this + " already has a pet named " + pet.getName());
+            return false;
+        }else {
+            return pets.add(pet);
+        }
     }
+
+    public Pet getPet(String name){
+        if (name == null || name.isEmpty() || name.isBlank()) return null;
+
+        for (Pet pet : pets){
+            if (pet.getName().equals(name)) return pet;
+        }
+
+        return null;
+    }
+
+    public void checkPets() {
+        pets.removeIf(pet -> isDead());
+    }
+
+    public boolean teachPetCommand(String petName, String commandName, String commandAction){
+        if (petName == null || petName.isEmpty() || petName.isBlank()) {
+            System.out.println(getName() + surname + " could not pronounce such a name");
+            return false;
+        }else if (commandName == null || commandName.isEmpty() || commandName.isBlank()
+                || commandAction == null || commandAction.isEmpty() || commandAction.isBlank()){
+            System.out.println(getName() + surname + " could not pronounce such a command");
+            return false;
+        } else {
+            int index = pets.indexOf(Pet.petWithName(petName));
+            if (index >= 0){
+                if (pets.get(index).learnCommand(commandName, commandAction)){
+                    System.out.println(this + " taught " + petName + " the command \"" + commandName + "\".");
+                    return true;
+                }else {
+                    System.out.println(this + " failed to teach " + petName + " the command \"" + commandName + "\".");
+                    return false;
+                }
+            }else {
+                System.out.println(this + " called " + petName + " but none of his pets responded.");
+                return false;
+            }
+        }
+    }
+
+
 
     @Override
     public void eat() {
@@ -87,6 +134,16 @@ public class Human extends Pet implements Legs, Fangs, Glottis {
     }
 
     @Override
+    public boolean bite(Animal animal) {
+        return animal.survive(20);
+    }
+
+    @Override
+    public void makeSound() {
+        System.out.println("Hello! My name is " + getName() + " " + surname + ".");
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash(getName(), surname, getIntelligence(), getMaxEnergy());
     }
@@ -103,15 +160,5 @@ public class Human extends Pet implements Legs, Fangs, Glottis {
     @Override
     public String toString() {
         return getName() + " " + surname;
-    }
-
-    @Override
-    public boolean bite(Animal animal) {
-        return animal.survive(20);
-    }
-
-    @Override
-    public void makeSound() {
-        System.out.println("Hello! My name is " + getName() + " " + surname + ".");
     }
 }
