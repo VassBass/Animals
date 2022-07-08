@@ -2,14 +2,13 @@ package fauna.creature;
 
 import exception.NotEnoughEnergyException;
 import fauna.Animal;
-import fauna.Predator;
-import fauna.limb.Legs;
+import fauna.organ.Legs;
 
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Human extends Animal implements Predator, Legs {
+public class Human extends Pet implements Legs {
     private final String name, surname;
 
     private final ArrayList<Animal>pets = new ArrayList<>();
@@ -94,11 +93,6 @@ public class Human extends Animal implements Predator, Legs {
         }
 
         return successChance >= 80;
-    }
-
-    @Override
-    public boolean hunt(Animal prey) {
-        return !prey.survive(90);
     }
 
     @Override

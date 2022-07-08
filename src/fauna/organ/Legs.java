@@ -1,4 +1,4 @@
-package fauna.limb;
+package fauna.organ;
 
 import exception.NotEnoughEnergyException;
 
