@@ -1,16 +1,16 @@
-package fauna.creature;
-
-import fauna.Animal;
+package fauna;
 
 import java.util.HashMap;
 
 public abstract class Pet extends Animal {
+    private final String name;
     private final int intelligence;
     private final HashMap<String, String>commands = new HashMap<>();
 
-    public Pet(int maxEnergy, int intelligence) {
+    protected Pet(int maxEnergy, int intelligence, String name) {
         super(maxEnergy);
         this.intelligence = intelligence;
+        this.name = name;
     }
 
     public boolean learnCommand(String name, String action){
@@ -32,5 +32,9 @@ public abstract class Pet extends Animal {
 
     public int getIntelligence(){
         return intelligence;
+    }
+
+    public String getName(){
+        return name;
     }
 }

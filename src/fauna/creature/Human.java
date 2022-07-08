@@ -2,20 +2,22 @@ package fauna.creature;
 
 import exception.NotEnoughEnergyException;
 import fauna.Animal;
+import fauna.Pet;
+import fauna.organ.Fangs;
+import fauna.organ.Glottis;
 import fauna.organ.Legs;
 
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Human extends Pet implements Legs {
-    private final String name, surname;
+public class Human extends Pet implements Legs, Fangs, Glottis {
+    private final String surname;
 
     private final ArrayList<Animal>pets = new ArrayList<>();
 
     protected Human(String name, String surname, int maxEnergy, int intelligence) {
-        super(maxEnergy, intelligence);
-        this.name = name;
+        super(maxEnergy, intelligence, name);
         this.surname = surname;
     }
 
@@ -26,10 +28,6 @@ public class Human extends Pet implements Legs {
         }else {
             return new Human(name, surname, maxEnergy, intelligence);
         }
-    }
-
-    public String getName(){
-        return name;
     }
 
     public String getSurname(){
@@ -76,20 +74,13 @@ public class Human extends Pet implements Legs {
             successChance = ThreadLocalRandom.current().nextInt(60, 101);
         }else if (height < 2D) {
             decreaseEnergy(2);
-            successChance = ThreadLocalRandom.current().nextInt(40, 101);
-        }else if (height < 4) {
-            decreaseEnergy(5);
-            successChance = ThreadLocalRandom.current().nextInt(20, 101);
-        }else {
-            decreaseEnergy(10);
             successChance = ThreadLocalRandom.current().nextInt(0, 101);
-            if (successChance < 80){
-                if (!survive(40)){
-                    this.died();
-                    System.out.println("Oooops... " + this + " unsuccessfully fell and die...");
-                }
-                return false;
-            }
+        }else if (height < 2.45) {
+            decreaseEnergy(5);
+            successChance = ThreadLocalRandom.current().nextInt(0, 91);
+        }else {
+            System.out.println(this + " thought about jumping " + height + " meters high, but remembered that people cannot jump to such a height.");
+            return false;
         }
 
         return successChance >= 80;
@@ -97,7 +88,7 @@ public class Human extends Pet implements Legs {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, surname);
+        return Objects.hash(getName(), surname, getIntelligence(), getMaxEnergy());
     }
 
     @Override
@@ -106,11 +97,21 @@ public class Human extends Pet implements Legs {
         if (obj == this) return true;
 
         Human human = (Human) obj;
-        return name.equals(human.getName()) && surname.equals(human.getSurname());
+        return getName().equals(human.getName()) && surname.equals(human.getSurname());
     }
 
     @Override
     public String toString() {
-        return name + " " + surname;
+        return getName() + " " + surname;
+    }
+
+    @Override
+    public boolean bite(Animal animal) {
+        return animal.survive(20);
+    }
+
+    @Override
+    public void makeSound() {
+        System.out.println("Hello! My name is " + getName() + " " + surname + ".");
     }
 }

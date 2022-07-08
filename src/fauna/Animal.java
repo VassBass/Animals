@@ -10,7 +10,7 @@ public abstract class Animal {
 
     private int energy;
 
-    public Animal(int maxEnergy){
+    protected Animal(int maxEnergy){
         MAX_ENERGY = maxEnergy;
     }
 
